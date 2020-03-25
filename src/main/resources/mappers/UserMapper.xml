@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mappers.UserMapper">
+  <resultMap id="BaseResultMap" type="com.example.entity.User">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="perms" jdbcType="VARCHAR" property="perms" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+  </resultMap>
+
+  <select id="selectPermsByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
+    select pi.perms_url from user us left join user_perms up on us.id = up.user_id left join perms_info pi
+     on up.perms_id = pi.id where us.id = #{id}
+  </select>
+</mapper>

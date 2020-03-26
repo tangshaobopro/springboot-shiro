@@ -1,14 +1,14 @@
 package com.example.config;
 
 
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Configuration
 public class ShiroConfig {
@@ -16,6 +16,7 @@ public class ShiroConfig {
     //创建ShiroFilterFactoryBean
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager securityManager){
+        System.out.println("创建shiroFilterFactoryBean=======");
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         /**
@@ -58,15 +59,42 @@ public class ShiroConfig {
 
     //创建DefaultWebSecurityManager
     @Bean(name = "securityManager")
-    public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userReaml") UserReaml userReaml){
+    public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("realms") List<Realm> realms,
+                        @Qualifier("customizedModularRealmAuthenticator") CustomizedModularRealmAuthenticator customizedModularRealmAuthenticator){
+        System.out.println("创建securityManager=======");
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        defaultWebSecurityManager.setRealm(userReaml);
+        defaultWebSecurityManager.setAuthenticator(customizedModularRealmAuthenticator);
+        defaultWebSecurityManager.setRealms(realms);
         return defaultWebSecurityManager;
     }
 
     //创建Reaml
-    @Bean(name = "userReaml")
-    public UserReaml getUserReaml(){
-        return new UserReaml();
+    @Bean(name = "realms")
+    public List<Realm> getReams(@Qualifier("userRealm") UserRealm userRealm, @Qualifier("adminRealm") AdminRealm adminRealm){
+        System.out.println("创建Reams========");
+        List<Realm> realms = new ArrayList<>();
+        realms.add(userRealm);
+        realms.add(adminRealm);
+        return realms;
+    }
+
+    @Bean(name = "customizedModularRealmAuthenticator")
+    public CustomizedModularRealmAuthenticator getCustomizedModularRealmAuthenticator(){
+        return new CustomizedModularRealmAuthenticator();
+    }
+
+    @Bean(name = "userRealm")
+    public UserRealm getUserRealm(){
+        UserRealm userRealm = new UserRealm();
+        userRealm.setName("userRealm");
+        return userRealm;
+    }
+
+    @Bean(name = "adminRealm")
+    public AdminRealm getAdminRealm(){
+        //需要设置realm的name值 不设置默认为类的路径
+        AdminRealm realm = new AdminRealm();
+        realm.setName("adminRealm");
+        return realm;
     }
 }

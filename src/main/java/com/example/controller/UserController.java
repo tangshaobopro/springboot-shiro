@@ -1,6 +1,7 @@
 package com.example.controller;
 
 
+import com.example.config.LoginUserNamePassword;
 import com.example.entity.User;
 import com.example.mappers.UserMapper;
 import com.example.service.UserService;
@@ -60,10 +61,10 @@ public class UserController {
     public String userLogin(String username, String password, Model model) {
         try {
             Subject subject = SecurityUtils.getSubject();
-            UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
-            subject.login(usernamePasswordToken);
+            LoginUserNamePassword loginUserNamePassword = new LoginUserNamePassword(username, password,1);
+            subject.login(loginUserNamePassword);
 
-            System.out.println(usernamePasswordToken.getPrincipal().toString());
+            System.out.println(loginUserNamePassword.getPrincipal().toString());
             return "redirect:/user/home";
         } catch (UnknownAccountException e) {
             model.addAttribute("msg","用户名错误");

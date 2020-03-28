@@ -33,6 +33,7 @@ public class AdminRealm extends AuthorizingRealm {
         return authorizationInfo;
     }
 
+
     //执行认证逻辑
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
@@ -46,4 +47,5 @@ public class AdminRealm extends AuthorizingRealm {
         //密码判断只需返回如下，第一个参数为需要返回的信息，第二个为数据库里密码，第三个为realmName
         return new SimpleAuthenticationInfo(user,user.getPassword(),"");
     }
+
 }

@@ -1,13 +1,17 @@
 package com.example.config;
 
 
+import com.example.Filter.ShiroLoginFilter;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.filter.mgt.DefaultFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
 import java.util.*;
 
 @Configuration
@@ -53,6 +57,9 @@ public class ShiroConfig {
         //设置拦截后跳转的页面（实为controller路径，因为templates下的文件不能直接访问）
         shiroFilterFactoryBean.setLoginUrl("/user/login");
         shiroFilterFactoryBean.setUnauthorizedUrl("/public/unAuthc");
+        Map<String, Filter> map = new HashMap<>();
+        map.put(DefaultFilter.authc.toString(),new ShiroLoginFilter());
+        shiroFilterFactoryBean.setFilters(map);
         return shiroFilterFactoryBean;
     }
 
